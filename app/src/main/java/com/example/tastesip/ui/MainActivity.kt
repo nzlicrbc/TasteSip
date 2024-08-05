@@ -1,4 +1,4 @@
-    package com.example.tastesip
+    package com.example.tastesip.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
