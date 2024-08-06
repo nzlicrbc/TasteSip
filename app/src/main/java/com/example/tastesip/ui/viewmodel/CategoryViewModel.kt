@@ -20,4 +20,14 @@ class CategoryViewModel(private val repository: RecipeRepository) : ViewModel() 
             _mealCategories.value = repository.getMealCategories()
         }
     }
+
+    private val _cocktailCategories = MutableLiveData<Resource<List<Category>>>()
+    val cocktailCategories: LiveData<Resource<List<Category>>> = _cocktailCategories
+
+    fun fetchCocktailCategories() {
+        viewModelScope.launch {
+            _cocktailCategories.value = Resource.Loading()
+            _cocktailCategories.value = repository.getCocktailCategories()
+        }
+    }
 }
