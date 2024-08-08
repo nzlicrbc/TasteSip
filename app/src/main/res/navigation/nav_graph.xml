@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigationFragment">
+
+    <fragment
+        android:id="@+id/navigationFragment"
+        android:name="com.example.tastesip.ui.fragment.NavigationFragment"
+        android:label="fragment_navigation"
+        tools:layout="@layout/fragment_navigation">
+        <action
+            android:id="@+id/action_mainActivity_to_mealCategoryFragment"
+            app:destination="@id/mealCategoryFragment" />
+        <action
+            android:id="@+id/action_mainActivity_to_cocktailCategoryFragment"
+            app:destination="@id/cocktailCategoryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mealCategoryFragment"
+        android:name="com.example.tastesip.ui.fragment.MealCategoryFragment"
+        android:label="fragment_meal_category"
+        tools:layout="@layout/fragment_meal_category">
+        <action
+            android:id="@+id/action_mealCategoryFragment_to_mealListFragment"
+            app:destination="@id/mealListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cocktailCategoryFragment"
+        android:name="com.example.tastesip.ui.fragment.CocktailCategoryFragment"
+        android:label="fragment_cocktail_category"
+        tools:layout="@layout/fragment_cocktail_category">
+        <action
+            android:id="@+id/action_cocktailCategoryFragment_to_cocktailListFragment"
+            app:destination="@id/cocktailListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mealListFragment"
+        android:name="com.example.tastesip.ui.fragment.MealListFragment"
+        android:label="fragment_meal_list"
+        tools:layout="@layout/fragment_meal_list">
+        <action
+            android:id="@+id/action_mealListFragment_to_mealDetailFragment"
+            app:destination="@id/mealDetailFragment" />
+        <argument
+            android:name="category"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cocktailListFragment"
+        android:name="com.example.tastesip.ui.fragment.CocktailListFragment"
+        android:label="fragment_cocktail_list"
+        tools:layout="@layout/fragment_cocktail_list">
+        <action
+            android:id="@+id/action_cocktailListFragment_to_cocktailDetailFragment"
+            app:destination="@id/cocktailDetailFragment" />
+        <argument
+            android:name="category"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/mealDetailFragment"
+        android:name="com.example.tastesip.ui.fragment.MealDetailFragment"
+        android:label="fragment_meal_detail"
+        tools:layout="@layout/fragment_meal_detail">
+        <argument
+            android:name="mealId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/cocktailDetailFragment"
+        android:name="com.example.tastesip.ui.fragment.CocktailDetailFragment"
+        android:label="fragment_cocktail_detail"
+        tools:layout="@layout/fragment_cocktail_detail">
+        <argument
+            android:name="cocktailId"
+            app:argType="string" />
+    </fragment>
+</navigation>
