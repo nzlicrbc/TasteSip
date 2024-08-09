@@ -83,4 +83,5 @@
             android:name="cocktailId"
             app:argType="string" />
     </fragment>
+
 </navigation>
