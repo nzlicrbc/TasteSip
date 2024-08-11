@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.data.model.Cocktail
-import com.example.tastesip.databinding.ItemCocktailCategoryBinding
+import com.example.tastesip.databinding.ItemCocktailListBinding
 import com.squareup.picasso.Picasso
 
 class CocktailListAdapter(
@@ -12,9 +12,9 @@ class CocktailListAdapter(
     private val onItemClick: (Cocktail) -> Unit
 ) : RecyclerView.Adapter<CocktailListAdapter.CocktailViewHolder>() {
 
-    private lateinit var binding: ItemCocktailCategoryBinding //
+    private lateinit var binding: ItemCocktailListBinding
 
-    inner class CocktailViewHolder(private val binding: ItemCocktailCategoryBinding) :
+    inner class CocktailViewHolder(private val binding: ItemCocktailListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(cocktail: Cocktail) {
             with(binding) {
@@ -27,7 +27,7 @@ class CocktailListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailViewHolder {
         binding =
-            ItemCocktailCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemCocktailListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CocktailViewHolder(binding)
     }
 

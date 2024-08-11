@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.data.model.Meal
-import com.example.tastesip.databinding.ItemMealCategoryBinding
+import com.example.tastesip.databinding.ItemMealListBinding
 import com.squareup.picasso.Picasso
 
 class MealListAdapter(
@@ -12,14 +12,14 @@ class MealListAdapter(
     private val onItemClick: (Meal) -> Unit
 ) : RecyclerView.Adapter<MealListAdapter.MealViewHolder>() {
 
-    private lateinit var binding: ItemMealCategoryBinding
+    private lateinit var binding: ItemMealListBinding
 
-    inner class MealViewHolder(private val binding: ItemMealCategoryBinding) :
+    inner class MealViewHolder(private val binding: ItemMealListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(meal: Meal) {
             with(binding) {
-                textViewMealCategoryName.text = meal.strMeal
-                Picasso.get().load(meal.strMealThumb).into(imageViewMealCategory)
+                textViewMealName.text = meal.strMeal
+                Picasso.get().load(meal.strMealThumb).into(imageViewMeal)
                 root.setOnClickListener { onItemClick(meal) }
             }
         }
@@ -27,7 +27,7 @@ class MealListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealViewHolder {
         binding =
-            ItemMealCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemMealListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MealViewHolder(binding)
     }
 
