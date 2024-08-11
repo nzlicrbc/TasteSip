@@ -4,31 +4,37 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tastesip.data.model.Cocktail
-import com.example.tastesip.data.model.Meal
-import com.example.tastesip.data.repository.RecipeRepository
+import com.example.tastesip.data.model.CocktailDetail
+import com.example.tastesip.data.model.MealDetail
+import com.example.tastesip.data.repository.CocktailRepository
+import com.example.tastesip.data.repository.MealRepository
 import com.example.tastesip.util.Resource
 import kotlinx.coroutines.launch
 
-class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
+class RecipeViewModel(
+    private val mealRepository: MealRepository,
+    private val cocktailRepository: CocktailRepository
+) : ViewModel() {
 
-    private val _meals = MutableLiveData<Resource<List<Meal>>>()
-    val meals: LiveData<Resource<List<Meal>>> = _meals
+    private val _mealDetail = MutableLiveData<Resource<MealDetail?>>()
+    val mealDetail: LiveData<Resource<MealDetail?>> = _mealDetail
 
-    private val _cocktails = MutableLiveData<Resource<List<Cocktail>>>()
-    val cocktails: LiveData<Resource<List<Cocktail>>> = _cocktails
+    private val _cocktailDetail = MutableLiveData<Resource<CocktailDetail?>>()
+    val cocktailDetail: LiveData<Resource<CocktailDetail?>> = _cocktailDetail
 
-    fun fetchMealsByCategory(category: String) {
+
+    fun fetchMealDetail(id: String) {
         viewModelScope.launch {
-            _meals.value = Resource.Loading()
-            _meals.value = repository.getMealsByCategory(category)
+            _mealDetail.value = Resource.Loading()
+            _mealDetail.value = mealRepository.getMealDetail(id)
         }
     }
 
-    fun fetchCocktailsByCategory(category: String) {
+    fun fetchCocktailDetail(id: String) {
         viewModelScope.launch {
-            _cocktails.value = Resource.Loading()
-            _cocktails.value = repository.getCocktailsByCategory(category)
+            _cocktailDetail.value = Resource.Loading()
+            _cocktailDetail.value = cocktailRepository.getCocktailDetail(id)
+
         }
     }
 }
