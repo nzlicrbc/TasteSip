@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
 import com.example.tastesip.databinding.FragmentCocktailDetailBinding
-import com.example.tastesip.ui.adapter.CocktailCategoryAdapter
 import com.example.tastesip.ui.adapter.CocktailDetailAdapter
 import com.example.tastesip.ui.adapter.CocktailDetailItem
-import com.example.tastesip.ui.adapter.MealDetailItem
 import com.example.tastesip.ui.viewmodel.RecipeViewModel
 import com.example.tastesip.ui.viewmodel.RecipeViewModelFactory
 import com.example.tastesip.util.Resource
@@ -50,8 +47,10 @@ class CocktailDetailFragment : Fragment() {
         viewModel.fetchCocktailDetail(args.cocktailId)
 
         adapter = CocktailDetailAdapter()
-        binding.recyclerViewCocktailDetail.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewCocktailDetail.adapter = adapter
+        with(binding) {
+            recyclerViewCocktailDetail.layoutManager = LinearLayoutManager(requireContext())
+            recyclerViewCocktailDetail.adapter = adapter
+        }
     }
 
     private fun observeViewModel() {
@@ -60,7 +59,8 @@ class CocktailDetailFragment : Fragment() {
                 is Resource.Success -> {
                     resource.data?.let { cocktailDetail ->
                         binding.cocktailNameTextView.text = cocktailDetail.strDrink
-                        Picasso.get().load(cocktailDetail.strDrinkThumb).into(binding.cocktailImageView)
+                        Picasso.get().load(cocktailDetail.strDrinkThumb)
+                            .into(binding.cocktailImageView)
 
                         val items = mutableListOf<CocktailDetailItem>()
                         items.add(CocktailDetailItem.Instruction(cocktailDetail.strInstructions))
@@ -73,9 +73,15 @@ class CocktailDetailFragment : Fragment() {
                         adapter.setItems(items)
                     }
                 }
+
                 is Resource.Error -> {
-                    Snackbar.make(requireView(), resource.message ?: "Bir hata oluştu", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        requireView(),
+                        resource.message ?: "Bir hata oluştu",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Resource.Loading -> {
                 }
             }

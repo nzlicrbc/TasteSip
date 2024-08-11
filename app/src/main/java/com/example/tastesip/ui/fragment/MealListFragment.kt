@@ -16,7 +16,6 @@ import com.example.tastesip.databinding.FragmentMealListBinding
 import com.example.tastesip.ui.adapter.MealListAdapter
 import com.example.tastesip.ui.viewmodel.ListViewModel
 import com.example.tastesip.ui.viewmodel.ListViewModelFactory
-import com.example.tastesip.ui.viewmodel.RecipeViewModel
 import com.example.tastesip.util.Resource
 import com.google.android.material.snackbar.Snackbar
 
@@ -50,7 +49,8 @@ class MealListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = MealListAdapter(emptyList()) { meal ->
-            val action = MealListFragmentDirections.actionMealListFragmentToMealDetailFragment(meal.idMeal)
+            val action =
+                MealListFragmentDirections.actionMealListFragmentToMealDetailFragment(meal.idMeal)
             findNavController().navigate(action)
         }
         binding.recyclerViewMeals.apply {
@@ -67,9 +67,15 @@ class MealListFragment : Fragment() {
                         adapter.submitList(it)
                     }
                 }
+
                 is Resource.Error -> {
-                    Snackbar.make(requireView(), resource.message ?: "Bir hata oluştu", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        requireView(),
+                        resource.message ?: "Bir hata oluştu",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Resource.Loading -> {
                 }
             }

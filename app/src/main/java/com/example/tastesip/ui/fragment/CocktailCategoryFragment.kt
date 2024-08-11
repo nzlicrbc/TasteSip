@@ -42,11 +42,16 @@ class CocktailCategoryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = CocktailCategoryAdapter(emptyList()) { category ->
-            val action = CocktailCategoryFragmentDirections.actionCocktailCategoryFragmentToCocktailListFragment(category.strCategory)
+            val action =
+                CocktailCategoryFragmentDirections.actionCocktailCategoryFragmentToCocktailListFragment(
+                    category.strCategory
+                )
             findNavController().navigate(action)
         }
-        binding.recyclerViewCocktailCategories.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewCocktailCategories.adapter = adapter
+        with(binding) {
+            recyclerViewCocktailCategories.layoutManager = LinearLayoutManager(context)
+            recyclerViewCocktailCategories.adapter = adapter
+        }
     }
 
     private fun setupViewModel() {
@@ -62,9 +67,15 @@ class CocktailCategoryFragment : Fragment() {
                 is Resource.Success -> {
                     adapter.updateList(resource.data ?: emptyList())
                 }
+
                 is Resource.Error -> {
-                    Snackbar.make(requireView(), resource.message ?: "Bir hata oluştu", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        requireView(),
+                        resource.message ?: "Bir hata oluştu",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Resource.Loading -> {
                 }
             }

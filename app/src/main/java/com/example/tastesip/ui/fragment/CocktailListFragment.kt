@@ -50,11 +50,16 @@ class CocktailListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = CocktailListAdapter(emptyList()) { cocktail ->
-            val action = CocktailListFragmentDirections.actionCocktailListFragmentToCocktailDetailFragment(cocktail.idDrink)
+            val action =
+                CocktailListFragmentDirections.actionCocktailListFragmentToCocktailDetailFragment(
+                    cocktail.idDrink
+                )
             findNavController().navigate(action)
         }
-        binding.recyclerViewCocktails.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewCocktails.adapter = adapter
+        with(binding) {
+            recyclerViewCocktails.layoutManager = LinearLayoutManager(context)
+            recyclerViewCocktails.adapter = adapter
+        }
     }
 
     private fun observeViewModel() {
@@ -65,9 +70,15 @@ class CocktailListFragment : Fragment() {
                         adapter.submitList(it)
                     }
                 }
+
                 is Resource.Error -> {
-                    Snackbar.make(requireView(), resource.message ?: "An error occurred", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        requireView(),
+                        resource.message ?: "An error occurred",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Resource.Loading -> {
                 }
             }

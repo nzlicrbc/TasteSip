@@ -42,11 +42,14 @@ class MealCategoryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = MealCategoryAdapter(emptyList()) { category ->
-            val action = MealCategoryFragmentDirections.actionMealCategoryFragmentToMealListFragment(category.strCategory)
+            val action =
+                MealCategoryFragmentDirections.actionMealCategoryFragmentToMealListFragment(category.strCategory)
             findNavController().navigate(action)
         }
-        binding.recyclerViewMealCategories.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewMealCategories.adapter = adapter
+        with(binding) {
+            recyclerViewMealCategories.layoutManager = LinearLayoutManager(context)
+            recyclerViewMealCategories.adapter = adapter
+        }
     }
 
     private fun setupViewModel() {
@@ -62,9 +65,15 @@ class MealCategoryFragment : Fragment() {
                 is Resource.Success -> {
                     adapter.submitList(resource.data ?: emptyList())
                 }
+
                 is Resource.Error -> {
-                    Snackbar.make(requireView(), resource.message ?: "An error occurred", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        requireView(),
+                        resource.message ?: "An error occurred",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Resource.Loading -> {
                 }
             }

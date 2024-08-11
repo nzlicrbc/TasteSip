@@ -12,8 +12,6 @@ import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
 import com.example.tastesip.databinding.FragmentMealDetailBinding
-import com.example.tastesip.ui.adapter.CocktailDetailAdapter
-import com.example.tastesip.ui.adapter.CocktailDetailItem
 import com.example.tastesip.ui.adapter.MealDetailAdapter
 import com.example.tastesip.ui.adapter.MealDetailItem
 import com.example.tastesip.ui.viewmodel.RecipeViewModel
@@ -49,8 +47,10 @@ class MealDetailFragment : Fragment() {
         viewModel.fetchMealDetail(args.mealId)
 
         adapter = MealDetailAdapter()
-        binding.recyclerViewMealDetail.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewMealDetail.adapter = adapter
+        with(binding) {
+            recyclerViewMealDetail.layoutManager = LinearLayoutManager(requireContext())
+            recyclerViewMealDetail.adapter = adapter
+        }
     }
 
     private fun observeViewModel() {
@@ -72,9 +72,15 @@ class MealDetailFragment : Fragment() {
                         adapter.setItems(items)
                     }
                 }
+
                 is Resource.Error -> {
-                    Snackbar.make(requireView(), resource.message ?: "Bir hata oluştu", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        requireView(),
+                        resource.message ?: "Bir hata oluştu",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
+
                 is Resource.Loading -> {
                 }
             }
