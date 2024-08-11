@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Taste&amp;Sip</string>
+    <string name="meal_button_text">Meal</string>
+    <string name="cocktail_button_text">Cocktail</string>
 </resources>
