@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tastesip.databinding.FragmentCocktailCategoryBinding
 import com.example.tastesip.data.api.RetrofitClient
@@ -49,7 +50,7 @@ class CocktailCategoryFragment : Fragment() {
             findNavController().navigate(action)
         }
         with(binding) {
-            recyclerViewCocktailCategories.layoutManager = LinearLayoutManager(context)
+            recyclerViewCocktailCategories.layoutManager = GridLayoutManager(context, 2)
             recyclerViewCocktailCategories.adapter = adapter
         }
     }

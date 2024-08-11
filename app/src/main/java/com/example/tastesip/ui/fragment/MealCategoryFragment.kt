@@ -1,6 +1,7 @@
 package com.example.tastesip.ui.fragment
 
 import CategoryViewModel
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
@@ -42,12 +44,11 @@ class MealCategoryFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = MealCategoryAdapter(emptyList()) { category ->
-            val action =
-                MealCategoryFragmentDirections.actionMealCategoryFragmentToMealListFragment(category.strCategory)
+            val action = MealCategoryFragmentDirections.actionMealCategoryFragmentToMealListFragment(category.strCategory)
             findNavController().navigate(action)
         }
         with(binding) {
-            recyclerViewMealCategories.layoutManager = LinearLayoutManager(context)
+            recyclerViewMealCategories.layoutManager = GridLayoutManager(context, 2)
             recyclerViewMealCategories.adapter = adapter
         }
     }

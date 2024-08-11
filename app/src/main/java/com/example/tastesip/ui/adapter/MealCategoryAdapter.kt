@@ -28,6 +28,10 @@ class MealCategoryAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealCategoryViewHolder {
         binding =
             ItemMealCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        val displayMetrics = parent.context.resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        binding.root.layoutParams.width = screenWidth / 2
         return MealCategoryViewHolder(binding)
     }
 
