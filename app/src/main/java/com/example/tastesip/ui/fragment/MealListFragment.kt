@@ -48,7 +48,7 @@ class MealListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = MealListAdapter(emptyList()) { meal ->
+        adapter = MealListAdapter { meal ->
             val action =
                 MealListFragmentDirections.actionMealListFragmentToMealDetailFragment(meal.idMeal)
             findNavController().navigate(action)

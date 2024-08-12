@@ -47,9 +47,9 @@ class MealDetailFragment : Fragment() {
         viewModel.fetchMealDetail(args.mealId)
 
         adapter = MealDetailAdapter()
-        with(binding) {
-            recyclerViewMealDetail.layoutManager = LinearLayoutManager(requireContext())
-            recyclerViewMealDetail.adapter = adapter
+        binding.recyclerViewMealDetail.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@MealDetailFragment.adapter
         }
     }
 

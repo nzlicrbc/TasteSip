@@ -43,13 +43,13 @@ class MealCategoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = MealCategoryAdapter(emptyList()) { category ->
+        adapter = MealCategoryAdapter { category ->
             val action = MealCategoryFragmentDirections.actionMealCategoryFragmentToMealListFragment(category.strCategory)
             findNavController().navigate(action)
         }
-        with(binding) {
-            recyclerViewMealCategories.layoutManager = GridLayoutManager(context, 2)
-            recyclerViewMealCategories.adapter = adapter
+        binding.recyclerViewMealCategories.apply {
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = this@MealCategoryFragment.adapter
         }
     }
 

@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.databinding.ItemCocktailDetailBinding
+import com.example.tastesip.util.CustomDiffUtil
+import com.example.tastesip.util.calculateAndDispatch
 
 class CocktailDetailAdapter :
     RecyclerView.Adapter<CocktailDetailAdapter.CocktailDetailViewHolder>() {
@@ -11,9 +13,10 @@ class CocktailDetailAdapter :
     private var items: List<CocktailDetailItem> = emptyList()
     private lateinit var binding: ItemCocktailDetailBinding
 
-    fun setItems(newItems: List<CocktailDetailItem>) {
-        items = newItems
-        notifyDataSetChanged()
+    fun setItems(newCocktailItems: List<CocktailDetailItem>) {
+        val diffUtil = CustomDiffUtil(items, newCocktailItems)
+        items = newCocktailItems
+        diffUtil.calculateAndDispatch(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailDetailViewHolder {

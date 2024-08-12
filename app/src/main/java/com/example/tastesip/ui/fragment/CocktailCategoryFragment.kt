@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tastesip.databinding.FragmentCocktailCategoryBinding
 import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
@@ -28,7 +27,7 @@ class CocktailCategoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCocktailCategoryBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -42,16 +41,16 @@ class CocktailCategoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = CocktailCategoryAdapter(emptyList()) { category ->
+        adapter = CocktailCategoryAdapter { category ->
             val action =
                 CocktailCategoryFragmentDirections.actionCocktailCategoryFragmentToCocktailListFragment(
                     category.strCategory
                 )
             findNavController().navigate(action)
         }
-        with(binding) {
-            recyclerViewCocktailCategories.layoutManager = GridLayoutManager(context, 2)
-            recyclerViewCocktailCategories.adapter = adapter
+        binding.recyclerViewCocktailCategories.apply {
+            layoutManager = GridLayoutManager(context, 2)
+            adapter = this@CocktailCategoryFragment.adapter
         }
     }
 
@@ -66,7 +65,7 @@ class CocktailCategoryFragment : Fragment() {
         viewModel.cocktailCategories.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {
-                    adapter.updateList(resource.data ?: emptyList())
+                    adapter.submitList(resource.data ?: emptyList())
                 }
 
                 is Resource.Error -> {

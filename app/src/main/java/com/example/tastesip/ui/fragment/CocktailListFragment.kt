@@ -49,7 +49,7 @@ class CocktailListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = CocktailListAdapter(emptyList()) { cocktail ->
+        adapter = CocktailListAdapter { cocktail ->
             val action =
                 CocktailListFragmentDirections.actionCocktailListFragmentToCocktailDetailFragment(
                     cocktail.idDrink

@@ -5,13 +5,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.data.model.Cocktail
 import com.example.tastesip.databinding.ItemCocktailListBinding
+import com.example.tastesip.util.CustomDiffUtil
+import com.example.tastesip.util.calculateAndDispatch
 import com.squareup.picasso.Picasso
 
 class CocktailListAdapter(
-    private var cocktails: List<Cocktail>,
     private val onItemClick: (Cocktail) -> Unit
 ) : RecyclerView.Adapter<CocktailListAdapter.CocktailViewHolder>() {
 
+    private var cocktails: List<Cocktail> = emptyList()
     private lateinit var binding: ItemCocktailListBinding
 
     inner class CocktailViewHolder(private val binding: ItemCocktailListBinding) :
@@ -37,8 +39,9 @@ class CocktailListAdapter(
 
     override fun getItemCount() = cocktails.size
 
-    fun submitList(cocktailList: List<Cocktail>) {
-        cocktails = cocktailList
-        notifyDataSetChanged()
+    fun submitList(newCocktailList: List<Cocktail>) {
+        val diffUtil = CustomDiffUtil(cocktails, newCocktailList)
+        cocktails = newCocktailList
+        diffUtil.calculateAndDispatch(this)
     }
 }

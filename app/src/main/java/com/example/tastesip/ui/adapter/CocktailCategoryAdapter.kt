@@ -6,12 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.R
 import com.example.tastesip.data.model.CocktailCategory
 import com.example.tastesip.databinding.ItemCocktailCategoryBinding
+import com.example.tastesip.util.CustomDiffUtil
+import com.example.tastesip.util.calculateAndDispatch
 
 class CocktailCategoryAdapter(
-    private var cocktailCategories: List<CocktailCategory>,
     private val onItemClick: (CocktailCategory) -> Unit
 ) : RecyclerView.Adapter<CocktailCategoryAdapter.CocktailCategoryViewHolder>() {
 
+    private var cocktailCategories: List<CocktailCategory> = emptyList()
     private lateinit var binding: ItemCocktailCategoryBinding
 
     inner class CocktailCategoryViewHolder(binding: ItemCocktailCategoryBinding) :
@@ -37,8 +39,9 @@ class CocktailCategoryAdapter(
 
     override fun getItemCount() = cocktailCategories.size
 
-    fun updateList(newCategories: List<CocktailCategory>) {
+    fun submitList(newCategories: List<CocktailCategory>) {
+        val diffUtil = CustomDiffUtil(cocktailCategories, newCategories)
         cocktailCategories = newCategories
-        notifyDataSetChanged()
+        diffUtil.calculateAndDispatch(this)
     }
 }

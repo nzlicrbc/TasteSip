@@ -47,9 +47,9 @@ class CocktailDetailFragment : Fragment() {
         viewModel.fetchCocktailDetail(args.cocktailId)
 
         adapter = CocktailDetailAdapter()
-        with(binding) {
-            recyclerViewCocktailDetail.layoutManager = LinearLayoutManager(requireContext())
-            recyclerViewCocktailDetail.adapter = adapter
+        binding.recyclerViewCocktailDetail.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@CocktailDetailFragment.adapter
         }
     }
 

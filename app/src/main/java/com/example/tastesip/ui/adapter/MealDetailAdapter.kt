@@ -4,15 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tastesip.databinding.ItemMealDetailBinding
+import com.example.tastesip.util.CustomDiffUtil
+import com.example.tastesip.util.calculateAndDispatch
 
 class MealDetailAdapter : RecyclerView.Adapter<MealDetailAdapter.MealDetailViewHolder>() {
 
     private var items: List<MealDetailItem> = emptyList()
     private lateinit var binding: ItemMealDetailBinding
 
-    fun setItems(newItems: List<MealDetailItem>) {
-        items = newItems
-        notifyDataSetChanged()
+    fun setItems(newMealItems: List<MealDetailItem>) {
+        val diffUtil = CustomDiffUtil(items, newMealItems)
+        items = newMealItems
+        diffUtil.calculateAndDispatch(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MealDetailViewHolder {
