@@ -3,6 +3,7 @@ package com.example.tastesip.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tastesip.data.model.CocktailDetailItem
 import com.example.tastesip.databinding.ItemCocktailDetailBinding
 import com.example.tastesip.util.CustomDiffUtil
 import com.example.tastesip.util.calculateAndDispatch
@@ -43,9 +44,4 @@ class CocktailDetailAdapter :
             }
         }
     }
-}
-
-sealed class CocktailDetailItem {
-    data class Instruction(val text: String) : CocktailDetailItem()
-    data class Ingredient(val text: String) : CocktailDetailItem()
 }

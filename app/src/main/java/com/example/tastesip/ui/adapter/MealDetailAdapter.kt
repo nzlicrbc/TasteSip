@@ -3,6 +3,7 @@ package com.example.tastesip.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tastesip.data.model.MealDetailItem
 import com.example.tastesip.databinding.ItemMealDetailBinding
 import com.example.tastesip.util.CustomDiffUtil
 import com.example.tastesip.util.calculateAndDispatch
@@ -38,9 +39,4 @@ class MealDetailAdapter : RecyclerView.Adapter<MealDetailAdapter.MealDetailViewH
             }
         }
     }
-}
-
-sealed class MealDetailItem {
-    data class Instruction(val text: String) : MealDetailItem()
-    data class Ingredient(val text: String) : MealDetailItem()
 }
