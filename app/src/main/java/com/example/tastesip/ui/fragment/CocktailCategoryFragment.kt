@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.tastesip.R
 import com.example.tastesip.databinding.FragmentCocktailCategoryBinding
 import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
@@ -71,7 +72,7 @@ class CocktailCategoryFragment : Fragment() {
                 is Resource.Error -> {
                     Snackbar.make(
                         requireView(),
-                        resource.message ?: "Bir hata oluştu",
+                        resource.message ?: getString(R.string.error_message),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tastesip.R
 import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
@@ -74,7 +75,7 @@ class CocktailListFragment : Fragment() {
                 is Resource.Error -> {
                     Snackbar.make(
                         requireView(),
-                        resource.message ?: "An error occurred",
+                        resource.message ?: getString(R.string.error_message),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }

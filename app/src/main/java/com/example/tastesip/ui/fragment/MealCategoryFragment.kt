@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tastesip.R
 import com.example.tastesip.data.api.RetrofitClient
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
@@ -70,7 +71,7 @@ class MealCategoryFragment : Fragment() {
                 is Resource.Error -> {
                     Snackbar.make(
                         requireView(),
-                        resource.message ?: "An error occurred",
+                        resource.message ?: getString(R.string.error_message),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }

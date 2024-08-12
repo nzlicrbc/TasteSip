@@ -8,12 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tastesip.R
 import com.example.tastesip.data.api.RetrofitClient
+import com.example.tastesip.data.model.CocktailDetailItem
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
 import com.example.tastesip.databinding.FragmentCocktailDetailBinding
 import com.example.tastesip.ui.adapter.CocktailDetailAdapter
-import com.example.tastesip.ui.adapter.CocktailDetailItem
 import com.example.tastesip.ui.viewmodel.RecipeViewModel
 import com.example.tastesip.ui.viewmodel.RecipeViewModelFactory
 import com.example.tastesip.util.Resource
@@ -77,7 +78,7 @@ class CocktailDetailFragment : Fragment() {
                 is Resource.Error -> {
                     Snackbar.make(
                         requireView(),
-                        resource.message ?: "Bir hata oluştu",
+                        resource.message ?: getString(R.string.error_message),
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
