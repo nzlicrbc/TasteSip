@@ -20,6 +20,10 @@ import com.example.tastesip.ui.adapter.MealCategoryAdapter
 import com.example.tastesip.ui.viewmodel.CategoryViewModelFactory
 import com.example.tastesip.util.Resource
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MealCategoryFragment : Fragment() {
 
@@ -37,6 +41,10 @@ class MealCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.lottieAnimationView.playAnimation()
+        binding.lottieAnimationView.visibility = View.VISIBLE
+        binding.recyclerViewMealCategories.visibility = View.GONE
 
         setupRecyclerView()
         setupViewModel()
@@ -65,10 +73,19 @@ class MealCategoryFragment : Fragment() {
         viewModel.mealCategories.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {
-                    adapter.submitList(resource.data ?: emptyList())
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        binding.lottieAnimationView.visibility = View.GONE
+                        binding.lottieAnimationView.cancelAnimation()
+                        binding.recyclerViewMealCategories.visibility = View.VISIBLE
+                        adapter.submitList(resource.data ?: emptyList())
+                    }
                 }
 
                 is Resource.Error -> {
+                    binding.lottieAnimationView.visibility = View.GONE
+                    binding.lottieAnimationView.cancelAnimation()
+                    binding.recyclerViewMealCategories.visibility = View.VISIBLE
                     Snackbar.make(
                         requireView(),
                         resource.message ?: getString(R.string.error_message),
@@ -77,6 +94,9 @@ class MealCategoryFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
+                    binding.lottieAnimationView.playAnimation()
+                    binding.lottieAnimationView.visibility = View.VISIBLE
+                    binding.recyclerViewMealCategories.visibility = View.GONE
                 }
             }
         }

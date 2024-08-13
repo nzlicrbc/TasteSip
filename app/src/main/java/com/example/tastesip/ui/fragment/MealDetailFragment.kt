@@ -20,6 +20,10 @@ import com.example.tastesip.ui.viewmodel.RecipeViewModelFactory
 import com.example.tastesip.util.Resource
 import com.squareup.picasso.Picasso
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MealDetailFragment : Fragment() {
 
@@ -58,23 +62,23 @@ class MealDetailFragment : Fragment() {
         viewModel.mealDetail.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {
-                    resource.data?.let { mealDetail ->
-                        binding.recipeTitleTextView.text = mealDetail.strMeal
-                        Picasso.get().load(mealDetail.strMealThumb).into(binding.recipeImageView)
-
-                        val items = mutableListOf<MealDetailItem>()
-                        items.add(MealDetailItem.Instruction(mealDetail.strInstructions))
-
-                        val ingredients = mealDetail.ingredientsAndMeasuresList
-                            .filter { (ingredient, measure) -> !ingredient.isNullOrBlank() && !measure.isNullOrBlank() }
-                            .joinToString("\n") { (ingredient, measure) -> "$measure $ingredient" }
-                        items.add(MealDetailItem.Ingredient(ingredients))
-
-                        adapter.setItems(items)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        binding.lottieAnimationView.visibility = View.GONE
+                        binding.lottieAnimationView.cancelAnimation()
+                        binding.recyclerViewMealDetail.visibility = View.VISIBLE
+                        resource.data?.let { mealDetail ->
+                            binding.recipeTitleTextView.text = mealDetail.strMeal
+                            Picasso.get().load(mealDetail.strMealThumb)
+                                .into(binding.recipeImageView)
+                        }
                     }
                 }
 
                 is Resource.Error -> {
+                    binding.lottieAnimationView.visibility = View.GONE
+                    binding.lottieAnimationView.cancelAnimation()
+                    binding.recyclerViewMealDetail.visibility = View.VISIBLE
                     Snackbar.make(
                         requireView(),
                         resource.message ?: getString(R.string.error_message),
@@ -83,8 +87,14 @@ class MealDetailFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
+                    binding.lottieAnimationView.playAnimation()
+                    binding.lottieAnimationView.visibility = View.VISIBLE
+                    binding.recyclerViewMealDetail.visibility = View.GONE
                 }
             }
+        }
+        viewModel.mealDetailItems.observe(viewLifecycleOwner) { items ->
+            adapter.setItems(items)
         }
     }
 }

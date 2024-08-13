@@ -18,6 +18,10 @@ import com.example.tastesip.ui.adapter.CocktailCategoryAdapter
 import com.example.tastesip.ui.viewmodel.CategoryViewModelFactory
 import com.example.tastesip.util.Resource
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class CocktailCategoryFragment : Fragment() {
 
@@ -35,6 +39,10 @@ class CocktailCategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.lottieAnimationView.playAnimation()
+        binding.lottieAnimationView.visibility = View.VISIBLE
+        binding.recyclerViewCocktailCategories.visibility = View.GONE
 
         setupRecyclerView()
         setupViewModel()
@@ -66,10 +74,19 @@ class CocktailCategoryFragment : Fragment() {
         viewModel.cocktailCategories.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {
-                    adapter.submitList(resource.data ?: emptyList())
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        binding.lottieAnimationView.visibility = View.GONE
+                        binding.lottieAnimationView.cancelAnimation()
+                        binding.recyclerViewCocktailCategories.visibility = View.VISIBLE
+                        adapter.submitList(resource.data ?: emptyList())
+                    }
                 }
 
                 is Resource.Error -> {
+                    binding.lottieAnimationView.visibility = View.GONE
+                    binding.lottieAnimationView.cancelAnimation()
+                    binding.recyclerViewCocktailCategories.visibility = View.VISIBLE
                     Snackbar.make(
                         requireView(),
                         resource.message ?: getString(R.string.error_message),
@@ -78,6 +95,9 @@ class CocktailCategoryFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
+                    binding.lottieAnimationView.playAnimation()
+                    binding.lottieAnimationView.visibility = View.VISIBLE
+                    binding.recyclerViewCocktailCategories.visibility = View.GONE
                 }
             }
         }
