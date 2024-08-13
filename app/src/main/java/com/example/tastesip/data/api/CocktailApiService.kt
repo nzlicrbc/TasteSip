@@ -10,9 +10,9 @@ interface CocktailApiService {
     @GET("list.php?c=list")
     suspend fun getCocktailCategories(): CocktailCategoryResponse
 
-    @GET("filter.php?c=KATEGORI_ADI")
+    @GET("filter.php")
     suspend fun getCocktailsByCategory(@Query("c") category: String): CocktailListResponse
 
-    @GET("lookup.php?i=KOKTEYL_ID")
+    @GET("lookup.php")
     suspend fun getCocktailDetails(@Query("i") id: String): CocktailDetailResponse
 }

@@ -19,6 +19,10 @@ import com.example.tastesip.ui.viewmodel.ListViewModel
 import com.example.tastesip.ui.viewmodel.ListViewModelFactory
 import com.example.tastesip.util.Resource
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class CocktailListFragment : Fragment() {
 
@@ -67,12 +71,21 @@ class CocktailListFragment : Fragment() {
         viewModel.drinks.observe(viewLifecycleOwner) { resource ->
             when (resource) {
                 is Resource.Success -> {
-                    resource.data?.let {
-                        adapter.submitList(it)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        delay(3000)
+                        binding.lottieAnimationView.visibility = View.GONE
+                        binding.lottieAnimationView.cancelAnimation()
+                        binding.recyclerViewCocktails.visibility = View.VISIBLE
+                        resource.data?.let {
+                            adapter.submitList(it)
+                        }
                     }
                 }
 
                 is Resource.Error -> {
+                    binding.lottieAnimationView.visibility = View.GONE
+                    binding.lottieAnimationView.cancelAnimation()
+                    binding.recyclerViewCocktails.visibility = View.VISIBLE
                     Snackbar.make(
                         requireView(),
                         resource.message ?: getString(R.string.error_message),
@@ -81,6 +94,9 @@ class CocktailListFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
+                    binding.lottieAnimationView.playAnimation()
+                    binding.lottieAnimationView.visibility = View.VISIBLE
+                    binding.recyclerViewCocktails.visibility = View.GONE
                 }
             }
         }
