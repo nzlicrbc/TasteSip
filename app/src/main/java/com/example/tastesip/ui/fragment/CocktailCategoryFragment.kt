@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,6 +17,8 @@ import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
 import com.example.tastesip.ui.adapter.CocktailCategoryAdapter
 import com.example.tastesip.ui.viewmodel.CategoryViewModelFactory
+import com.example.tastesip.ui.viewmodel.ListViewModel
+import com.example.tastesip.ui.viewmodel.ListViewModelFactory
 import com.example.tastesip.util.Resource
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +29,13 @@ import kotlinx.coroutines.launch
 class CocktailCategoryFragment : Fragment() {
 
     private lateinit var binding: FragmentCocktailCategoryBinding
-    private lateinit var viewModel: CategoryViewModel
     private lateinit var adapter: CocktailCategoryAdapter
+    private val viewModel: CategoryViewModel by viewModels(factoryProducer = {
+        CategoryViewModelFactory(
+            MealRepository(RetrofitClient.mealApiService),
+            CocktailRepository(RetrofitClient.cocktailApiService)
+        )
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +53,6 @@ class CocktailCategoryFragment : Fragment() {
         binding.recyclerViewCocktailCategories.visibility = View.GONE
 
         setupRecyclerView()
-        setupViewModel()
         observeViewModel()
     }
 
@@ -61,13 +68,6 @@ class CocktailCategoryFragment : Fragment() {
             layoutManager = GridLayoutManager(context, 2)
             adapter = this@CocktailCategoryFragment.adapter
         }
-    }
-
-    private fun setupViewModel() {
-        val mealRepository = MealRepository(RetrofitClient.mealApiService)
-        val cocktailRepository = CocktailRepository(RetrofitClient.cocktailApiService)
-        val viewModelFactory = CategoryViewModelFactory(mealRepository, cocktailRepository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(CategoryViewModel::class.java)
     }
 
     private fun observeViewModel() {

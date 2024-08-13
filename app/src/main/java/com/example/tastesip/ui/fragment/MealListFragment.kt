@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -27,9 +28,14 @@ import kotlinx.coroutines.launch
 class MealListFragment : Fragment() {
 
     private lateinit var binding: FragmentMealListBinding
-    private lateinit var viewModel: ListViewModel
     private lateinit var adapter: MealListAdapter
     private val args: MealListFragmentArgs by navArgs()
+    private val viewModel: ListViewModel by viewModels(factoryProducer = {
+        ListViewModelFactory(
+            MealRepository(RetrofitClient.mealApiService),
+            CocktailRepository(RetrofitClient.cocktailApiService)
+        )
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,11 +47,6 @@ class MealListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val mealRepository = MealRepository(RetrofitClient.mealApiService)
-        val cocktailRepository = CocktailRepository(RetrofitClient.cocktailApiService)
-        val viewModelFactory = ListViewModelFactory(mealRepository, cocktailRepository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ListViewModel::class.java)
 
         setupRecyclerView()
         observeViewModel()

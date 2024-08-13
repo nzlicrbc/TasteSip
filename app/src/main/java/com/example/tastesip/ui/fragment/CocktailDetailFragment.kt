@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,8 @@ import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
 import com.example.tastesip.databinding.FragmentCocktailDetailBinding
 import com.example.tastesip.ui.adapter.CocktailDetailAdapter
+import com.example.tastesip.ui.viewmodel.ListViewModel
+import com.example.tastesip.ui.viewmodel.ListViewModelFactory
 import com.example.tastesip.ui.viewmodel.RecipeViewModel
 import com.example.tastesip.ui.viewmodel.RecipeViewModelFactory
 import com.example.tastesip.util.Resource
@@ -28,9 +31,14 @@ import kotlinx.coroutines.launch
 class CocktailDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentCocktailDetailBinding
-    private lateinit var viewModel: RecipeViewModel
     private val args: CocktailDetailFragmentArgs by navArgs()
     private lateinit var adapter: CocktailDetailAdapter
+    private val viewModel: RecipeViewModel by viewModels(factoryProducer = {
+        RecipeViewModelFactory(
+            MealRepository(RetrofitClient.mealApiService),
+            CocktailRepository(RetrofitClient.cocktailApiService)
+        )
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,11 +50,6 @@ class CocktailDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val mealRepository = MealRepository(RetrofitClient.mealApiService)
-        val cocktailRepository = CocktailRepository(RetrofitClient.cocktailApiService)
-        val viewModelFactory = RecipeViewModelFactory(mealRepository, cocktailRepository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(RecipeViewModel::class.java)
 
         observeViewModel()
         viewModel.fetchCocktailDetail(args.cocktailId)
