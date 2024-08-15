@@ -32,7 +32,7 @@
         android:id="@+id/cocktailCategoryFragment"
         android:name="com.example.tastesip.ui.fragment.CocktailCategoryFragment"
         android:label="fragment_cocktail_category"
-        tools:layout="@layout/fragment_cocktail_category">
+        tools:layout="@layout/fragment_category">
         <action
             android:id="@+id/action_cocktailCategoryFragment_to_cocktailListFragment"
             app:destination="@id/cocktailListFragment" />
@@ -55,7 +55,7 @@
         android:id="@+id/cocktailListFragment"
         android:name="com.example.tastesip.ui.fragment.CocktailListFragment"
         android:label="fragment_cocktail_list"
-        tools:layout="@layout/fragment_cocktail_list">
+        tools:layout="@layout/fragment_list">
         <action
             android:id="@+id/action_cocktailListFragment_to_cocktailDetailFragment"
             app:destination="@id/cocktailDetailFragment" />
@@ -78,7 +78,7 @@
         android:id="@+id/cocktailDetailFragment"
         android:name="com.example.tastesip.ui.fragment.CocktailDetailFragment"
         android:label="fragment_cocktail_detail"
-        tools:layout="@layout/fragment_cocktail_detail">
+        tools:layout="@layout/fragment_detail">
         <argument
             android:name="cocktailId"
             app:argType="string" />

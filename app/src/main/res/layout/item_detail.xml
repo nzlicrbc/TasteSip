@@ -6,23 +6,13 @@
     android:padding="@dimen/padding_medium">
 
     <TextView
-        android:id="@+id/cocktailInstructionsTextView"
+        android:id="@+id/detailItemTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_size_small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/cocktailIngredientsTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_xxsmall"
-        android:textSize="@dimen/text_size_small"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cocktailInstructionsTextView"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

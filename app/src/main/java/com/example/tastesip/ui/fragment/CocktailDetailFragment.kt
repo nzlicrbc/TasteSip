@@ -1,103 +1,39 @@
 package com.example.tastesip.ui.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tastesip.R
 import com.example.tastesip.data.api.RetrofitClient
+import com.example.tastesip.data.model.CocktailDetail
 import com.example.tastesip.data.model.CocktailDetailItem
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
-import com.example.tastesip.databinding.FragmentCocktailDetailBinding
-import com.example.tastesip.ui.adapter.CocktailDetailAdapter
-import com.example.tastesip.ui.viewmodel.ListViewModel
-import com.example.tastesip.ui.viewmodel.ListViewModelFactory
+import com.example.tastesip.ui.adapter.DetailAdapter
 import com.example.tastesip.ui.viewmodel.RecipeViewModel
 import com.example.tastesip.ui.viewmodel.RecipeViewModelFactory
 import com.example.tastesip.util.Resource
-import com.google.android.material.snackbar.Snackbar
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class CocktailDetailFragment : Fragment() {
+class CocktailDetailFragment : DetailFragment<CocktailDetail, CocktailDetailItem>() {
 
-    private lateinit var binding: FragmentCocktailDetailBinding
     private val args: CocktailDetailFragmentArgs by navArgs()
-    private lateinit var adapter: CocktailDetailAdapter
-    private val viewModel: RecipeViewModel by viewModels(factoryProducer = {
+    override val viewModel: RecipeViewModel by viewModels {
         RecipeViewModelFactory(
             MealRepository(RetrofitClient.mealApiService),
             CocktailRepository(RetrofitClient.cocktailApiService)
         )
-    })
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentCocktailDetailBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override val adapter: DetailAdapter<CocktailDetailItem> = DetailAdapter()
 
-        observeViewModel()
+    override fun fetchDetail() {
         viewModel.fetchCocktailDetail(args.cocktailId)
-
-        adapter = CocktailDetailAdapter()
-        binding.recyclerViewCocktailDetail.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@CocktailDetailFragment.adapter
-        }
     }
 
-    private fun observeViewModel() {
-        viewModel.cocktailDetail.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(3000)
-                        binding.lottieAnimationView.visibility = View.GONE
-                        binding.lottieAnimationView.cancelAnimation()
-                        binding.recyclerViewCocktailDetail.visibility = View.VISIBLE
-                        resource.data?.let { cocktailDetail ->
-                            binding.cocktailNameTextView.text = cocktailDetail.strDrink
-                            Picasso.get().load(cocktailDetail.strDrinkThumb)
-                                .into(binding.cocktailImageView)
-                        }
-                    }
-                }
+    override fun getDetailLiveData(): LiveData<Resource<CocktailDetail?>> = viewModel.cocktailDetail
+    override fun getDetailItemsLiveData(): LiveData<List<CocktailDetailItem>> = viewModel.cocktailDetailItems
 
-                is Resource.Error -> {
-                    binding.lottieAnimationView.visibility = View.GONE
-                    binding.lottieAnimationView.cancelAnimation()
-                    binding.recyclerViewCocktailDetail.visibility = View.VISIBLE
-                    Snackbar.make(
-                        requireView(),
-                        resource.message ?: getString(R.string.error_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-
-                is Resource.Loading -> {
-                    binding.lottieAnimationView.playAnimation()
-                    binding.lottieAnimationView.visibility = View.VISIBLE
-                    binding.recyclerViewCocktailDetail.visibility = View.GONE
-                }
-            }
-        }
-        viewModel.cocktailDetailItems.observe(viewLifecycleOwner) { items ->
-            adapter.setItems(items)
-        }
+    override fun updateUI(detail: CocktailDetail) {
+        binding.detailTitleTextView.text = detail.strDrink
+        loadImage(detail.strDrinkThumb)
     }
 }

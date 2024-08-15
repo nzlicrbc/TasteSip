@@ -1,105 +1,36 @@
 package com.example.tastesip.ui.fragment
 
 import CategoryViewModel
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.tastesip.R
-import com.example.tastesip.databinding.FragmentCocktailCategoryBinding
 import com.example.tastesip.data.api.RetrofitClient
+import com.example.tastesip.data.model.CocktailCategory
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
-import com.example.tastesip.ui.adapter.CocktailCategoryAdapter
+import com.example.tastesip.ui.adapter.CategoryAdapter
 import com.example.tastesip.ui.viewmodel.CategoryViewModelFactory
-import com.example.tastesip.ui.viewmodel.ListViewModel
-import com.example.tastesip.ui.viewmodel.ListViewModelFactory
 import com.example.tastesip.util.Resource
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class CocktailCategoryFragment : Fragment() {
-
-    private lateinit var binding: FragmentCocktailCategoryBinding
-    private lateinit var adapter: CocktailCategoryAdapter
-    private val viewModel: CategoryViewModel by viewModels(factoryProducer = {
+class CocktailCategoryFragment : CategoryFragment<CocktailCategory>() {
+    override val viewModel: CategoryViewModel by viewModels {
         CategoryViewModelFactory(
             MealRepository(RetrofitClient.mealApiService),
             CocktailRepository(RetrofitClient.cocktailApiService)
         )
-    })
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentCocktailCategoryBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.lottieAnimationView.playAnimation()
-        binding.lottieAnimationView.visibility = View.VISIBLE
-        binding.recyclerViewCocktailCategories.visibility = View.GONE
-
-        setupRecyclerView()
-        observeViewModel()
-    }
-
-    private fun setupRecyclerView() {
-        adapter = CocktailCategoryAdapter { category ->
-            val action =
-                CocktailCategoryFragmentDirections.actionCocktailCategoryFragmentToCocktailListFragment(
-                    category.strCategory
-                )
+    override fun setupRecyclerView() {
+        adapter = CategoryAdapter { category ->
+            val action = CocktailCategoryFragmentDirections.actionCocktailCategoryFragmentToCocktailListFragment(category.strCategory)
             findNavController().navigate(action)
         }
-        binding.recyclerViewCocktailCategories.apply {
+        binding.recyclerViewCategories.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = this@CocktailCategoryFragment.adapter
         }
     }
 
-    private fun observeViewModel() {
-        viewModel.cocktailCategories.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(3000)
-                        binding.lottieAnimationView.visibility = View.GONE
-                        binding.lottieAnimationView.cancelAnimation()
-                        binding.recyclerViewCocktailCategories.visibility = View.VISIBLE
-                        adapter.submitList(resource.data ?: emptyList())
-                    }
-                }
-
-                is Resource.Error -> {
-                    binding.lottieAnimationView.visibility = View.GONE
-                    binding.lottieAnimationView.cancelAnimation()
-                    binding.recyclerViewCocktailCategories.visibility = View.VISIBLE
-                    Snackbar.make(
-                        requireView(),
-                        resource.message ?: getString(R.string.error_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-
-                is Resource.Loading -> {
-                    binding.lottieAnimationView.playAnimation()
-                    binding.lottieAnimationView.visibility = View.VISIBLE
-                    binding.recyclerViewCocktailCategories.visibility = View.GONE
-                }
-            }
-        }
-    }
+    override fun getLiveData(): LiveData<Resource<List<CocktailCategory>>> = viewModel.cocktailCategories
 }

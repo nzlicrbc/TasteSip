@@ -1,103 +1,38 @@
 package com.example.tastesip.ui.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tastesip.R
 import com.example.tastesip.data.api.RetrofitClient
+import com.example.tastesip.data.model.MealDetail
 import com.example.tastesip.data.model.MealDetailItem
 import com.example.tastesip.data.repository.CocktailRepository
 import com.example.tastesip.data.repository.MealRepository
-import com.example.tastesip.databinding.FragmentMealDetailBinding
-import com.example.tastesip.ui.adapter.MealDetailAdapter
-import com.example.tastesip.ui.viewmodel.ListViewModel
-import com.example.tastesip.ui.viewmodel.ListViewModelFactory
+import com.example.tastesip.ui.adapter.DetailAdapter
 import com.example.tastesip.ui.viewmodel.RecipeViewModel
 import com.example.tastesip.ui.viewmodel.RecipeViewModelFactory
 import com.example.tastesip.util.Resource
-import com.squareup.picasso.Picasso
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
-class MealDetailFragment : Fragment() {
+class MealDetailFragment : DetailFragment<MealDetail, MealDetailItem>() {
 
-    private lateinit var binding: FragmentMealDetailBinding
     private val args: MealDetailFragmentArgs by navArgs()
-    private lateinit var adapter: MealDetailAdapter
-    private val viewModel: RecipeViewModel by viewModels(factoryProducer = {
+    override val viewModel: RecipeViewModel by viewModels {
         RecipeViewModelFactory(
             MealRepository(RetrofitClient.mealApiService),
             CocktailRepository(RetrofitClient.cocktailApiService)
         )
-    })
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentMealDetailBinding.inflate(inflater, container, false)
-        return binding.root
     }
+    override val adapter: DetailAdapter<MealDetailItem> = DetailAdapter()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        observeViewModel()
+    override fun fetchDetail() {
         viewModel.fetchMealDetail(args.mealId)
-
-        adapter = MealDetailAdapter()
-        binding.recyclerViewMealDetail.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@MealDetailFragment.adapter
-        }
     }
 
-    private fun observeViewModel() {
-        viewModel.mealDetail.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        delay(3000)
-                        binding.lottieAnimationView.visibility = View.GONE
-                        binding.lottieAnimationView.cancelAnimation()
-                        binding.recyclerViewMealDetail.visibility = View.VISIBLE
-                        resource.data?.let { mealDetail ->
-                            binding.recipeTitleTextView.text = mealDetail.strMeal
-                            Picasso.get().load(mealDetail.strMealThumb)
-                                .into(binding.recipeImageView)
-                        }
-                    }
-                }
+    override fun getDetailLiveData(): LiveData<Resource<MealDetail?>> = viewModel.mealDetail
+    override fun getDetailItemsLiveData(): LiveData<List<MealDetailItem>> = viewModel.mealDetailItems
 
-                is Resource.Error -> {
-                    binding.lottieAnimationView.visibility = View.GONE
-                    binding.lottieAnimationView.cancelAnimation()
-                    binding.recyclerViewMealDetail.visibility = View.VISIBLE
-                    Snackbar.make(
-                        requireView(),
-                        resource.message ?: getString(R.string.error_message),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-
-                is Resource.Loading -> {
-                    binding.lottieAnimationView.playAnimation()
-                    binding.lottieAnimationView.visibility = View.VISIBLE
-                    binding.recyclerViewMealDetail.visibility = View.GONE
-                }
-            }
-        }
-        viewModel.mealDetailItems.observe(viewLifecycleOwner) { items ->
-            adapter.setItems(items)
-        }
+    override fun updateUI(detail: MealDetail) {
+        binding.detailTitleTextView.text = detail.strMeal
+        loadImage(detail.strMealThumb)
     }
 }
